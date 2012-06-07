@@ -39,7 +39,7 @@ def getbytes(filename):
         return fh.read()
     finally:
         fh.close()
-    
+   
 def converttoasm(s):
     """
         return asm include 
@@ -96,8 +96,26 @@ def converttocpp(s):
     output += "#define output_size " + str(j) + "\n"
     return output
 
+def converttophp(s):
+    """
+        return *.php include
+    """
+    j = len(s)
+    if j == 0:
+        return ""
+    output = "<?php\n$output = array(\n" + chr(9)
+    i = 0
+    while i < j - 1:
+        output += gethex(s[i]) + ","
+        if i % 16 == 15:
+            output += "\n" + chr(9)
+        i += 1
+    output += gethex(s[j - 1]) + "\n);\n"
+    output += "define ('output_size', " + str(j) + ");\n?>\n"
+    return output
+
 def usage():
-    print "Usage: %s asm|pas|cpp filename|string" % argv[0] 
+    print "Usage: %s asm|pas|cpp|php filename|string" % argv[0] 
     print "Filename will be treated as string if not found."
 
 if __name__ == "__main__":
@@ -110,6 +128,8 @@ if __name__ == "__main__":
             print converttocpp(argv[2])
         elif argv[1] == 'pas':
             print converttopas(argv[2])     
+        elif argv[1] == 'php':
+            print converttophp(argv[2])     
         else:
             usage()
     elif argv[1] == 'asm':
@@ -117,6 +137,8 @@ if __name__ == "__main__":
     elif argv[1] == 'cpp':
         print converttocpp(getbytes(argv[2]))
     elif argv[1] == 'pas':
+        print converttopas(getbytes(argv[2]))
+    elif argv[1] == 'php':
         print converttopas(getbytes(argv[2]))
     else:
         usage()
