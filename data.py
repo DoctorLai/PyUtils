@@ -67,7 +67,7 @@ def converttopas(s):
     j = len(s)
     if j == 0:
         return ""
-    output = "const Output: packed array [0 .. " + str(j - 1) + "] of Char = (\n" + chr(9)
+    output = "const Output: packed array [0 .. " + str(j - 1) + "] of Byte = (\n" + chr(9)
     i = 0
     while i < j - 1:
         output += getpashex(s[i]) + ","
