@@ -40,78 +40,78 @@ def getbytes(filename):
     finally:
         fh.close()
    
-def converttoasm(s):
+def converttoasm(s, f):
     """
         return asm include 
     """
     j = len(s)
     if j == 0:
         return ""
-    output = "Output: \n" + chr(9) + "db "
+    output = f + ": \n" + chr(9) + "db "
     i = 0
     while i < j - 1:
         if i % 16 == 15:
-            output += gethex(s[i]) + "\n" + chr(9) + "db "
+            output += gethex(s[i]) + ";" + str(i + 1) + "\n" + chr(9) + "db "
         else:
             output += gethex(s[i]) + ","
         i += 1
-    output += gethex(s[j - 1]) + "\n"
+    output += gethex(s[j - 1]) + ";" + str(i + 1) + "\n"
     output += "Output_End:\n"
-    output += "Output_Size EQU " + str(j)
+    output += f + "_Size EQU " + str(j)
     return output
 
-def converttopas(s):
+def converttopas(s, f):
     """
         return *.pas include
     """
     j = len(s)
     if j == 0:
         return ""
-    output = "const Output: packed array [0 .. " + str(j - 1) + "] of Byte = (\n" + chr(9)
+    output = "const " + f + ": packed array [0 .. " + str(j - 1) + "] of Byte = (\n" + chr(9)
     i = 0
     while i < j - 1:
         output += getpashex(s[i]) + ","
         if i % 16 == 15:
-            output += "\n" + chr(9)
+            output += "//" + str(i + 1) +  "\n" + chr(9)
         i += 1
-    output += getpashex(s[j - 1]) + "\n);\n"
-    output += "const output_size = " + str(j) + ";\n"
+    output += getpashex(s[j - 1]) + "//" + str(i + 1) + "\n);\n"
+    output += "const " + f + "_size = " + str(j) + ";\n"
     return output
 
-def converttocpp(s):
+def converttocpp(s, f):
     """
         return *.h include
     """
     j = len(s)
     if j == 0:
         return ""
-    output = "unsigned char output[] = {\n" + chr(9)
+    output = "unsigned char " + f + "[] = {\n" + chr(9)
     i = 0
     while i < j - 1:
         output += gethex(s[i]) + ","
         if i % 16 == 15:
-            output += "\n" + chr(9)
+            output += "//" + str(i + 1) +  "\n" + chr(9)
         i += 1
-    output += gethex(s[j - 1]) + "\n};\n"
-    output += "#define output_size " + str(j) + "\n"
+    output += gethex(s[j - 1]) + "//" + str(i + 1) + "\n};\n"
+    output += "#define " + f + "_size " + str(j) + "\n"
     return output
 
-def converttophp(s):
+def converttophp(s, f):
     """
         return *.php include
     """
     j = len(s)
     if j == 0:
         return ""
-    output = "<?php\n$output = array(\n" + chr(9)
+    output = "<?php\n$" + f + " = array(\n" + chr(9)
     i = 0
     while i < j - 1:
         output += gethex(s[i]) + ","
         if i % 16 == 15:
-            output += "\n" + chr(9)
+            output += "//" + str(i + 1) +  "\n" + chr(9)
         i += 1
-    output += gethex(s[j - 1]) + "\n);\n"
-    output += "define ('output_size', " + str(j) + ");\n?>\n"
+    output += gethex(s[j - 1]) + "//" + str(i + 1) + "\n);\n"
+    output += "define ('" + f + "_size', " + str(j) + ");\n?>\n"
     return output
 
 def usage():
@@ -123,26 +123,23 @@ if __name__ == "__main__":
         usage()
     elif not path.isfile(argv[2]):
         if argv[1] == 'asm':
-            print converttoasm(argv[2])
+            print converttoasm(argv[2], "OutputString" + str(len(argv[2])))
         elif argv[1] == 'cpp':
-            print converttocpp(argv[2])
+            print converttocpp(argv[2], "OutputString" + str(len(argv[2])))
         elif argv[1] == 'pas':
-            print converttopas(argv[2])     
+            print converttopas(argv[2], "OutputString" + str(len(argv[2])))
         elif argv[1] == 'php':
-            print converttophp(argv[2])     
+            print converttophp(argv[2], "OutputString" + str(len(argv[2])))
         else:
             usage()
     elif argv[1] == 'asm':
-        print converttoasm(getbytes(argv[2]))
+        print converttoasm(getbytes(argv[2]), "OutputFile" + str(len(argv[2])))
     elif argv[1] == 'cpp':
-        print converttocpp(getbytes(argv[2]))
+        print converttocpp(getbytes(argv[2]), "OutputFile" + str(len(argv[2])))
     elif argv[1] == 'pas':
-        print converttopas(getbytes(argv[2]))
+        print converttopas(getbytes(argv[2]), "OutputFile" + str(len(argv[2])))
     elif argv[1] == 'php':
-        print converttopas(getbytes(argv[2]))
+        print converttopas(getbytes(argv[2]), "OutputFile" + str(len(argv[2])))
     else:
         usage()
-        
-    
-
 
