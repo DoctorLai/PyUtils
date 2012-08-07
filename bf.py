@@ -53,7 +53,7 @@ def bf(src, left, right, data, idx):
             j = i + 1
             while j <= right and src[j] != ']': j += 1
             if j <= right:
-                while arr[ptr] > 0:
+                while arr[ptr] != 0:
                     bf(src, i + 1, j - 1, data, idx)
                 i = j
         i += 1
