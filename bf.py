@@ -45,7 +45,7 @@ def bf(src, left, right, data, idx):
             print(chr(arr[ptr]), end="")
         elif s == ',':
             if idx >= 0 and idx < len(data):
-                arr[ptr] = data[idx]
+                arr[ptr] = ord(data[idx])
                 idx += 1
             else:
                 arr[ptr] = 0 # out of input
