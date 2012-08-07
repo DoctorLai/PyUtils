@@ -4,11 +4,6 @@
 
 from __future__ import print_function
 
-# tuning machine has infinite array size
-# increase or decrease here accordingly
-arr = [0] * 30000
-ptr = 0
-
 def bf(src, left, right, data, idx):
     """
         brainfuck interpreter
@@ -19,11 +14,15 @@ def bf(src, left, right, data, idx):
         idx: start-index of input data string
     """
     if len(src) == 0: return
-    global arr, ptr
     if left < 0: left = 0
     if left >= len(src): left = len(src) - 1
     if right < 0: right = 0
     if right >= len(src): right = len(src) - 1
+    # tuning machine has infinite array size
+    # increase or decrease here accordingly
+    arr = [0] * 30000
+    ptr = 0
+    loop = 0
     i = left
     while i <= right:
         s = src[i]
@@ -50,14 +49,27 @@ def bf(src, left, right, data, idx):
             else:
                 arr[ptr] = 0 # out of input
         elif s =='[':
-            j = i + 1
-            while j <= right and src[j] != ']': j += 1
-            if j <= right:
-                while arr[ptr] != 0:
-                    bf(src, i + 1, j - 1, data, idx)
-                i = j
+            if arr[ptr] == 0:
+                loop = 1
+                while loop > 0:
+                    i += 1
+                    c = src[i]
+                    if c == '[':
+                        loop += 1
+                    elif c == ']':
+                        loop -= 1
+        elif s == ']':
+            loop = 1
+            while loop > 0:
+                i -= 1
+                c = src[i]
+                if c == '[':
+                    loop -= 1
+                elif c == ']':
+                    loop += 1
+            i -= 1
         i += 1
 
 if __name__ == "__main__":
-    src = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
+    src = raw_input()
     bf(src, 0, len(src) - 1, "", 0)
