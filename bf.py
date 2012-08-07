@@ -22,7 +22,6 @@ def bf(src, left, right, data, idx):
     # increase or decrease here accordingly
     arr = [0] * 30000
     ptr = 0
-    loop = 0
     i = left
     while i <= right:
         s = src[i]
@@ -72,4 +71,4 @@ def bf(src, left, right, data, idx):
 
 if __name__ == "__main__":
     src = raw_input()
-    bf(src, 0, len(src) - 1, "", 0)
+    bf(src, 0, len(src) - 1, "sdfsdf", 0)
